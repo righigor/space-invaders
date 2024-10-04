@@ -1,8 +1,8 @@
 function loginScreen() {
   fill(255);
+  textFont("audiowide");
   textAlign(CENTER, CENTER);
   textSize(64);
-  textFont("audiowide");
   text("SPACE INVADERS", width / 2, height / 2 - 180);
   
   textSize(24);
@@ -52,7 +52,7 @@ function gameOverScreen() {
 function generateHighScores() {
   return highScores.forEach((scoreEntry, i) => {
     text(
-      `${i + 1}. ${scoreEntry.name} - ${scoreEntry.score}`,
+      `${i + 1}. ${scoreEntry.name} - ${scoreEntry.score} - Tempo: ${scoreEntry.time}`,
       width / 2,
       height / 2 + 140 + i * 40
     );
