@@ -8,6 +8,8 @@ let playerSpeed = 7;
 let naveImg;
 let playerLives = 5;
 let bullets = [];
+let startTime;
+let elapsedTime = 0;
 
 // Inimigos
 let enemies = [];
@@ -20,6 +22,7 @@ let score = 0;
 let gameState = "login";
 let playerName = "";
 let highScores = [];
+let audiowideFont;
 
 // Carrega a imagem da nave antes de executar o código
 function preload() {
@@ -97,6 +100,8 @@ function startGame() {
   playerX = width / 2 - playerWidth / 2;
   playerY = height - playerHeight;
 
+  startTime = millis();
+
   // Cria inimigos
   for (let i = 0; i < 5; i++) {
     enemies.push(new Enemy(random(0, width - 60), random(-200, -100), 10));
@@ -106,6 +111,8 @@ function startGame() {
 // Função que atualiza o jogo
 function updateGame() {
   background(0);
+
+  elapsedTime = millis() - startTime;
 
   // Inimigos
   enemies.forEach((enemy, i) => {
@@ -138,7 +145,6 @@ function updateGame() {
             new Fragment(enemy.x + enemy.width / 2, enemy.y + enemy.height / 2)
           );
         }
-        console.log(enemy.getPoints());
         enemyHit(enemy.getPoints());
         enemies.splice(i, 1);
         bullets.splice(bulletIndex, 1);
@@ -190,6 +196,9 @@ function updateGame() {
   textSize(32);
   textAlign(LEFT, TOP);
   text("Score: " + score, 25, 25);
+
+  textSize(32);
+  text("Tempo: " + formatTime(elapsedTime), 25, 65);
 }
 
 // Função para reiniciar o jogo
@@ -202,9 +211,20 @@ function restartButtonGame() {
   gameState = "login";
 }
 
+// Função formatar o tempo
+function formatTime(elapsedTime) {
+  const totalSeconds = Math.floor(elapsedTime / 1000); // Total de segundos
+  const min = Math.floor(totalSeconds / 60); // Calcula os minutos
+  const sec = totalSeconds % 60; // Calcula os segundos restantes
+  const ms = Math.floor((elapsedTime % 1000) / 10); // Calcula os milissegundos restantes
+  return `${String(min).padStart(2, '0')}:${String(sec).padStart(2, '0')}:${String(ms).padStart(3, '0')}`;
+}
+
 // Função para salvar a pontuação no localStorage
 function saveScore() {
-  highScores.push({ name: playerName, score });
+  const formattedTime = formatTime(elapsedTime);
+
+  highScores.push({ name: playerName, score, time: formattedTime });
   highScores.sort((a, b) => b.score - a.score);
   highScores = highScores.slice(0, 5);
   localStorage.setItem("highScores", JSON.stringify(highScores));
@@ -227,17 +247,6 @@ function gameOver() {
   saveScore();
   gameState = "gameOver";
   redraw();
-}
-
-// Função que gera lista de recordes
-function generateHighScores() {
-  return highScores.forEach((scoreEntry, i) => {
-    text(
-      `${i + 1}. ${scoreEntry.name} - ${scoreEntry.score}`,
-      width / 2,
-      height / 2 + 140 + i * 40
-    );
-  });
 }
 
 // CLASSES

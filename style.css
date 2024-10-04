@@ -30,6 +30,7 @@ body {
   background-color: white;
   border-radius: 50%;
   opacity: 0.7;
+  z-index: 0;
   animation: pulseAnimation 3s infinite ease-in-out alternate;
   animation-duration: calc(3s (random(1s) - 0.5s));
 }
